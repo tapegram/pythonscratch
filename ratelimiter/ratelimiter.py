@@ -18,9 +18,15 @@ class RateLimiter:
       after=evt.timestamp - self.time_window,
       length=self.time_window,
     )
-    allowable_ops = min(evt.numberOfOperations, self.limit - count)
-    allowable_ops = max(allowable_ops, 0)  # Just in case we have bad data, we should put the lower limit on 0
 
-    self.history.addOps(consumer=evt.consumer, count=allowable_ops, timestamp=evt.timestamp)
+    allowable_ops = min(evt.numberOfOperations, self.limit - count)
+    # Just in case we have bad data, we should put the lower limit on 0
+    allowable_ops = max(allowable_ops, 0)  
+
+    self.history.addOps(
+      consumer=evt.consumer, 
+      count=allowable_ops, 
+      timestamp=evt.timestamp
+    )
 
     return allowable_ops
